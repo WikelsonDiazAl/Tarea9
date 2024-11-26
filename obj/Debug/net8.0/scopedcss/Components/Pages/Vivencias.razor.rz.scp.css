@@ -1,0 +1,73 @@
+h1[b-tfmpibuy7r] {
+    color: #ff5733;
+    text-align: center;
+    font-family: 'Comic Sans MS';
+    font-size: 3em;
+    text-shadow: 2px 2px 5px rgba(255, 87, 51, 0.6);
+    margin-bottom: 30px;
+}
+
+
+button[b-tfmpibuy7r] {
+    font-size: 1.2em;
+    padding: 10px 20px;
+    font-family: 'Comic Sans MS';
+    background-color: #00c3ff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+button:hover[b-tfmpibuy7r] {
+    background-color: #22deff;
+    transform: scale(1.1);
+}
+
+
+.btn-danger[b-tfmpibuy7r] {
+    background-color: #e57373;
+    color: white;
+    font-weight: bold;
+}
+
+.btn-danger:hover[b-tfmpibuy7r] {
+    background-color: #d32f2f;
+}
+
+
+.card[b-tfmpibuy7r] {
+    background-color: #0fe2f1;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.card img[b-tfmpibuy7r] {
+    max-width: 100%;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+
+.col-md-3[b-tfmpibuy7r] {
+    padding: 10px;
+}
+
+.card p[b-tfmpibuy7r] {
+    font-size: 1.1em;
+    line-height: 1.5;
+    margin: 5px 0;
+}
+
+
+.mt-3[b-tfmpibuy7r] {
+    margin-top: 30px;
+}
+
+
+div[b-tfmpibuy7r] {
+    margin-bottom: 20px;
+}

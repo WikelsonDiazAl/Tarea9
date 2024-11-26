@@ -1,0 +1,111 @@
+@page "/Vivencias/{usuarioId:int}/Añadir"
+@page "/Vivencias/{usuarioId:int}/Editar/{vivenciaId:int}"
+@rendermode InteractiveServer
+@inject ContextoVivencia Cv
+@inject IJSRuntime JSx
+@inject NavigationManager NavMan
+@using Microsoft.EntityFrameworkCore;
+
+<h2 class="text-center">@((instancia.VivenciaId == 0) ? "Añadir una vivencia" : "Editar  vivencia")</h2>
+
+<div class="formulario">
+<EditForm Model="instancia" OnValidSubmit="Añadir">
+    @if (instancia != null)
+    {
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form-group mb-3">
+            <label for="Titulo">Titulo:</label>
+            <InputText id="Titulo" class="form-control" @bind-Value="instancia.Titulo" />
+        </div>
+        <div class="form-group mb-3">
+            <label for="Descripcion">Descripcion:</label>
+            <InputTextArea id="Descripcion" class="form-control" @bind-Value="instancia.Descripcion" />
+        </div>
+        <div class="form-group mb-3">
+            <label for="Fecha">Fecha:</label>
+            <InputDate id="Fecha" class="form-control" @bind-Value="instancia.Fecha" />
+        </div>
+        <div class="form-group mb-3">
+            <label for="Imagen">Imagen de la portada:</label>
+            <input type="url" id="Imagen" class="form-control" @bind="instancia.ImagenRuta" />
+        </div>
+        <div>
+            <button class="mb-3" type="submit"> Añadir</button>
+            <button type="button" @onclick="Volver"> Volver</button>
+        </div>
+    }
+</EditForm>
+</div>
+
+@code {
+    [Parameter]
+    public int UsuarioId { get; set; }
+
+    [Parameter]
+    public int? VivenciaId { get; set; }
+
+    Vivencia instancia = new Vivencia();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var usuarioActual = UsuarioSession.GetInstance().UsuarioActual;
+
+        if (usuarioActual == null || usuarioActual.UsuarioId != UsuarioId)
+        {
+            NavMan.NavigateTo("/Login");
+            return;
+        }
+
+        if (VivenciaId.HasValue && VivenciaId > 0)
+        {
+            instancia = await Cv.Vivencias.FirstOrDefaultAsync(v => v.VivenciaId == VivenciaId);
+
+            if (instancia == null || instancia.UsuarioId != usuarioActual.UsuarioId)
+            {
+                NavMan.NavigateTo($"/Vivencias/{usuarioActual.UsuarioId}");
+            }
+        }
+    }
+
+
+    async Task Añadir()
+    {
+        var usuarioActual = UsuarioSession.GetInstance().UsuarioActual;
+
+        if (usuarioActual == null)
+        {
+            await JSx.InvokeVoidAsync("alert", "Error: Usuario no autenticado.");
+            return;
+        }
+
+        instancia.UsuarioId = usuarioActual.UsuarioId;
+
+        if (instancia.VivenciaId == 0)
+        {
+
+            Cv.Vivencias.Add(instancia);
+            await Cv.SaveChangesAsync();
+            await JSx.InvokeVoidAsync("alert", "Vivencia añadida correctamente.");
+        }
+        else
+        {
+
+            Cv.Vivencias.Update(instancia);
+            await Cv.SaveChangesAsync();
+            await JSx.InvokeVoidAsync("alert", "Vivencia actualizada correctamente.");
+        }
+
+        NavMan.NavigateTo($"/Vivencias/{usuarioActual.UsuarioId}");
+    }
+
+    async Task Volver(){
+        
+        var usuarioActual = UsuarioSession.GetInstance().UsuarioActual;
+
+         instancia.UsuarioId = usuarioActual.UsuarioId;
+
+        NavMan.NavigateTo($"/Vivencias/{usuarioActual.UsuarioId}");
+    }
+
+}

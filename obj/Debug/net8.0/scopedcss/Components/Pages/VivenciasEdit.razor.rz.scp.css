@@ -1,0 +1,79 @@
+h2[b-krbqqo158u] {
+    color: #ff6347;
+    text-align: center;
+    font-family: 'Comic Sans MS';
+    font-size: 2.5em;
+    text-shadow: 2px 2px 5px rgba(255, 99, 71, 0.5);
+    margin-bottom: 20px;
+}
+
+.formulario[b-krbqqo158u] {
+    background-color: #fff7e6;
+    font-family: 'Comic Sans MS';
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.form-group[b-krbqqo158u] {
+    margin-bottom: 20px;
+}
+
+label[b-krbqqo158u] {
+    font-size: 1.1em;
+    color: #ff6347;
+}
+
+input[b-krbqqo158u] {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 2px solid #ffcc00;
+    background-color: #fff;
+    font-size: 1em;
+    margin-top: 8px;
+    transition: border 0.3s ease;
+}
+
+input:focus[b-krbqqo158u] {
+    border-color: #ff5733;
+    outline: none;
+}
+
+button[type="submit"][b-krbqqo158u] {
+    font-size: 1.2em;
+    font-family: 'Comic Sans MS';
+    padding: 12px 20px;
+    background-color: #ffcc00;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+button[type="submit"]:hover[b-krbqqo158u] {
+    background-color: #ff5722;
+    transform: scale(1.05);
+}
+
+button[type="button"][b-krbqqo158u] {
+    font-size: 1.2em;
+    padding: 12px 20px;
+    font-family: 'Comic Sans MS';
+    background-color: #00ff95;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+button[type="button"]:hover[b-krbqqo158u] {
+    background-color: #ff5722;
+    transform: scale(1.05);
+}

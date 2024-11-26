@@ -1,0 +1,59 @@
+@page "/Login"
+@rendermode InteractiveServer
+@inject ContextoVivencia Cv
+@inject IJSRuntime JSx
+@using Microsoft.EntityFrameworkCore;
+@inject NavigationManager NavMan
+
+<h2>Login</h2>
+
+<div class="formulario">
+<EditForm Model="usuarios" OnValidSubmit="ValidarUsuario">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group mb-3">
+        <label for="Correo">Correo:</label>
+        <InputText id="Correo" class="form-control" @bind-Value="usuarios.Correo" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="Clave">Clave:</label>
+        <InputText id="Clave" class="form-control" @bind-Value="usuarios.Clave" type="password" />
+    </div>
+
+    <div>
+        <p>¿No tienes una cuenta?</p><a href="/Registrar">Registrarse</a>
+    </div>
+
+    <div>
+        <button type="submit">Iniciar sesión</button>
+    </div>
+</EditForm>
+</div>
+
+
+@code {
+    Usuario usuarios = new Usuario();
+
+    private async Task ValidarUsuario()
+    {
+        UsuarioSession.GetInstance().LimpiarSesion();
+
+        var usuario = await Cv.Usuarios
+        .FirstOrDefaultAsync(u => u.Correo == usuarios.Correo && u.Clave == usuarios.Clave);
+
+        if (usuario != null)
+        {
+
+            UsuarioSession.GetInstance().SetUsuario(usuario);
+
+            NavMan.NavigateTo($"/Vivencias/{usuario.UsuarioId}");
+        }
+        else
+        {
+            await JSx.InvokeVoidAsync("alert", "Correo o clave incorrectos.");
+        }
+    }
+
+}
