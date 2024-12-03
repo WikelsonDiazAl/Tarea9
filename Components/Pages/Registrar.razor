@@ -10,43 +10,105 @@
 
 <div class="formulario">
 <EditForm Model="usuarios" OnValidSubmit="RegistrarUsuario">
-    <DataAnnotationsValidator/>
-        <ValidationSummary/>
-
-        <div class="form-group mb-3">
-            <label for="Usuario">Usuario:</label>
-            <InputText id="Usuario" class="form-control" @bind-Value="usuarios.NombreUsuario" />
-        </div>
-
-        <div class="form-group mb-3">
-            <label for="Correo">Correo:</label>
-            <InputText id="Correo" class="form-control" @bind-Value="usuarios.Correo" />
-        </div>
-
-        <div class="form-group mb-3">
-            <label for="Clave">Clave:</label>
-            <InputText id="Clave" class="form-control" @bind-Value="usuarios.Clave" />
-        </div>
-
-        <div>
-        <p> ¿Tienes una cuenta?</p><a href="/Login">Iniciar sesión</a>
-        </div>
-
-        <div>
-            <button type="submit"> Registrar</button>
-        </div>
-
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group mb-3">
+        <label for="Usuario">Usuario:</label>
+        <InputText id="Usuario" class="form-control" @bind-Value="usuarios.NombreUsuario" />
+    </div>
+    <div class="form-group mb-3">
+        <label for="Correo">Correo:</label>
+        <InputText id="Correo" class="form-control" @bind-Value="usuarios.Correo" />
+    </div>
+    <div class="form-group mb-3">
+        <label for="Clave">Clave:</label>
+        <InputText id="Clave" class="form-control" @bind-Value="usuarios.Clave" />
+    </div>
+    <div>
+        <p>¿Tienes una cuenta?</p><a href="/Login">Iniciar sesión</a>
+    </div>
+    <div>
+        <button id="registrar" type="submit">Registrar</button>
+    </div>
 </EditForm>
+
+
 </div>
+
+@if (mostrarModalError)
+{
+    <div class="modal" tabindex="-1" role="dialog" style="display: block; background-color: rgba(0, 0, 0, 0.5);">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Error de Validación</h5>
+                    <button type="button" class="close" @onclick="() => mostrarModalError = false" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>@mensajeErrorModal</p>
+                </div>
+                <div class="modal-footer">
+                    <button id="error" type="button" class="btn btn-primary" @onclick="() => mostrarModalError = false">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (mostrarModalExito)
+{
+    <div class="modal" tabindex="-1" role="dialog" style="display: block; background-color: rgba(0, 0, 0, 0.5);">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Registro Exitoso</h5>
+                    <button type="button" class="close" @onclick="CerrarModalExito" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>@mensajeExitoModal</p>
+                </div>
+                <div class="modal-footer">
+                    <button id="exito"  type="button" class="btn btn-primary" @onclick="CerrarModalExito">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
 
 @code{
     Usuario usuarios = new Usuario();
 
-    async Task RegistrarUsuario(){
+    bool mostrarModalError = false;
+    string mensajeErrorModal;
 
-        Cv.Usuarios.Add(usuarios);
-        await Cv.SaveChangesAsync();
-        await JSx.InvokeVoidAsync("alert", "Usuario registrado con exito");
-        NavMan.NavigateTo("/Login");
+    bool mostrarModalExito = false;
+string mensajeExitoModal;
+
+async Task RegistrarUsuario()
+{
+    Cv.Usuarios.Add(usuarios);
+    await Cv.SaveChangesAsync();
+    mensajeExitoModal = "Usuario registrado con éxito.";
+    mostrarModalExito = true;
+}
+
+void CerrarModalExito()
+{
+    mostrarModalExito = false;
+    NavMan.NavigateTo("/Login");
+}
+
+    void MostrarErrores(EditContext editContext)
+    {
+        mensajeErrorModal = "Por favor, complete todos los campos obligatorios.";
+        mostrarModalError = true;
     }
+
+
 }

@@ -7,28 +7,46 @@
 
 <h1>Diario de videojuegos</h1>
 
+
 <div class=" m-3 text-end">
-    <button @onclick="IrACrearVivencia">Añadir</button>
+    <p>Total de vivencias: <strong>@vivenciasFiltradas.Count</strong></p>
 </div>
 
 <div class=" m-3 text-end">
-    <button class="btn btn-danger" @onclick="MostrarModalConfirmacion">🚨 Botón de Pánico</button>
+    <button id="añadir"  @onclick="IrACrearVivencia">Añadir</button>
+</div>
+
+<div class=" m-3 text-end">
+    <button id="btnPanico" class="btn btn-danger" @onclick="MostrarModalConfirmacion">🚨 Botón de Pánico</button>
 </div>
 
 <div class="row m-3">
-    @foreach (var Vivencia in vivencias)
+    <div class="col-md-6">
+        <input id="BarraFiltro" type="text" @bind="filtroTitulo" class="form-control" placeholder="Buscar por título..." />
+    </div>
+    <div class="">
+        <button id="btnFiltro" class="btn btn-primary" @onclick="FiltrarVivencias">Aplicar Filtro</button>
+    </div>
+</div>
+
+
+
+
+<div class="row m-3">
+    @foreach (var vivencia in vivenciasFiltradas)
     {
         <div class="col-md-3 mb-3">
             <div class="card">
-                <img class="card-img" src="@Vivencia.ImagenRuta" alt="n"  />
-                <strong>Titulo:</strong>
-                <p>@Vivencia.Titulo</p>
-                <strong>Descripcion:</strong>
-                <p>@Vivencia.Descripcion</p>
+                <img class="card-img" src="@vivencia.ImagenRuta" alt="n" />
+                <strong>Título:</strong>
+                <p>@vivencia.Titulo</p>
+                <strong>Descripción:</strong>
+                <p>@vivencia.Descripcion</p>
                 <strong>Fecha:</strong>
-                <p>@Vivencia.Fecha</p>
+                <p>@vivencia.Fecha</p>
                 <div>
-                    <button @onclick="() => Editar(Vivencia.UsuarioId, Vivencia.VivenciaId)">Editar</button>
+                    <button  id="Editar" @onclick="() => Editar(vivencia.UsuarioId, vivencia.VivenciaId)">Editar</button>
+                    <button id="Eliminar" class="btn btn-danger" @onclick="() => ConfirmarEliminacion(vivencia)">Eliminar</button>
                 </div>
             </div>
         </div>
@@ -49,7 +67,7 @@
                 </div>
                 <div class="modal-body">
                     <p>¿Está seguro de que desea eliminar todas sus vivencias? Ingrese su clave para confirmar:</p>
-                    <input type="password" @bind="claveIngresada" class="form-control" placeholder="Clave de seguridad" />
+                    <input id="barraclave" type="password" @bind="claveIngresada" class="form-control" placeholder="Clave de seguridad" />
                     @if (!string.IsNullOrEmpty(mensajeError))
                     {
                         <div class="alert alert-danger mt-2">
@@ -59,24 +77,56 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" @onclick="() => mostrarModal = false">Cancelar</button>
-                    <button type="button" class="btn btn-danger" @onclick="EliminarVivencias">Eliminar Vivencias</button>
+                    <button id="btnEliminar" type="button" class="btn btn-danger" @onclick="EliminarVivencias">Eliminar Vivencias</button>
                 </div>
             </div>
         </div>
     </div>
 }
 
+@if (mostrarModalEliminar)
+{
+    <div class="modal" tabindex="-1" role="dialog" style="display: block;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmación de eliminación</h5>
+                    <button type="button" class="close" @onclick="() => mostrarModalEliminar = false" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Está seguro de que desea eliminar esta vivencia?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="() => mostrarModalEliminar = false">Cancelar</button>
+                    <button id="modalEliminar" type="button" class="btn btn-danger" @onclick="EliminarVivenciaSeleccionada">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
 @code {
     [Parameter]
     public int Id { get; set; }
 
     List<Vivencia> vivencias = new List<Vivencia>();
+    
+    private List<Vivencia> vivenciasFiltradas = new List<Vivencia>();
 
     Vivencia vivencia = new Vivencia();
+
+    private string filtroTitulo = "";
 
     private bool mostrarModal = false;
     private string claveIngresada = "";
     private string mensajeError = "";
+
+    private bool mostrarModalEliminar = false;
+    private Vivencia vivenciaSeleccionada;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -91,6 +141,22 @@
         vivencias = await Cv.Vivencias
         .Where(v => v.UsuarioId == usuarioActual.UsuarioId)
         .ToListAsync();
+
+        vivenciasFiltradas = vivencias;
+    }
+
+    private void FiltrarVivencias()
+    {
+        if (string.IsNullOrWhiteSpace(filtroTitulo))
+        {
+            vivenciasFiltradas = vivencias;
+        }
+        else
+        {
+            vivenciasFiltradas = vivencias
+                .Where(v => v.Titulo.Contains(filtroTitulo, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
     }
 
     private void IrACrearVivencia()
@@ -152,4 +218,26 @@
             mensajeError = "La clave ingresada es incorrecta. Intenta de nuevo.";
         }
     }
+
+    private void ConfirmarEliminacion(Vivencia vivencia)
+{
+    vivenciaSeleccionada = vivencia;
+    mostrarModalEliminar = true;
+}
+
+private async Task EliminarVivenciaSeleccionada()
+{
+    if (vivenciaSeleccionada != null)
+    {
+        Cv.Vivencias.Remove(vivenciaSeleccionada);
+        await Cv.SaveChangesAsync();
+
+        vivencias.Remove(vivenciaSeleccionada);
+        vivenciasFiltradas.Remove(vivenciaSeleccionada);
+
+        vivenciaSeleccionada = null;
+        mostrarModalEliminar = false;
+    }
+}
+
 }

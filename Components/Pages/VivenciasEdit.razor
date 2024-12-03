@@ -31,7 +31,7 @@
             <input type="url" id="Imagen" class="form-control" @bind="instancia.ImagenRuta" />
         </div>
         <div>
-            <button class="mb-3" type="submit"> Añadir</button>
+            <button id="BotonAñadir" class="mb-3" type="submit"> Añadir</button>
             <button type="button" @onclick="Volver"> Volver</button>
         </div>
     }
@@ -86,14 +86,12 @@
 
             Cv.Vivencias.Add(instancia);
             await Cv.SaveChangesAsync();
-            await JSx.InvokeVoidAsync("alert", "Vivencia añadida correctamente.");
         }
         else
         {
 
             Cv.Vivencias.Update(instancia);
             await Cv.SaveChangesAsync();
-            await JSx.InvokeVoidAsync("alert", "Vivencia actualizada correctamente.");
         }
 
         NavMan.NavigateTo($"/Vivencias/{usuarioActual.UsuarioId}");
